@@ -56,135 +56,28 @@
         .table-body::-webkit-scrollbar-track{background:#f1f1f1}
         .table-body::-webkit-scrollbar-thumb{background:#c1c1c1;border-radius:3px}
         
-        /* ========== MOBILE FIXES ========== */
-        @media (max-width: 1100px) {
-            .dashboard {
-                height: auto;
-                min-height: 100vh;
-                grid-template-columns: 1fr;
-                grid-template-rows: auto auto;
-                max-width: 95%;
-                margin: 10px;
-            }
-            .sidebar {
-                order: 2;
-                padding: 20px;
-            }
-            .main-content {
-                order: 1;
-                padding: 20px;
-            }
+        @media (max-width:1024px){
+            body{display:block;padding:0;min-height:100vh;height:auto}
+            .dashboard{height:auto;min-height:100vh;grid-template-columns:1fr;grid-template-rows:auto auto;max-width:100%;border-radius:0;margin:0}
+            .sidebar{order:1;min-height:auto;padding:20px}
+            .main-content{order:2;min-height:auto;padding:20px;overflow:visible}
+            .table-body{max-height:none;height:auto;overflow:visible}
+            .table-container{overflow:visible}
+            body,.dashboard{overflow-y:auto;overflow-x:hidden}
         }
         
-        @media (max-width: 768px) {
-            .top-bar {
-                flex-direction: column;
-                gap: 15px;
-                align-items: stretch;
-            }
-            .live-count {
-                justify-content: center;
-                padding: 12px;
-            }
-            .page-title h2 {
-                font-size: 1.5rem;
-                justify-content: center;
-            }
-            .stats-container {
-                grid-template-columns: 1fr;
-            }
-            .table-body {
-                max-height: 300px;
-            }
-            table {
-                display: block;
-                overflow-x: auto;
-                white-space: nowrap;
-            }
-            th, td {
-                padding: 12px 10px;
-                font-size: 0.9rem;
-            }
-            .grade-badge {
-                min-width: 55px;
-                font-size: 0.8rem;
-                padding: 4px 8px;
-            }
-            .btn-delete {
-                padding: 6px 10px;
-                font-size: 0.8rem;
-            }
+        @media (max-width:480px){
+            .logo h1{font-size:1.5rem}
+            .top-bar{flex-direction:column;gap:15px;align-items:stretch}
+            .live-count{justify-content:center}
+            table{display:block;overflow-x:auto;white-space:nowrap}
+            .stats-container{grid-template-columns:1fr}
+            th,td{padding:12px 10px;font-size:0.9rem}
         }
         
-        @media (max-width: 480px) {
-            body {
-                padding: 10px;
-                align-items: flex-start;
-            }
-            .dashboard {
-                border-radius: 15px;
-                margin: 5px;
-            }
-            .logo h1 {
-                font-size: 1.5rem;
-                flex-direction: column;
-                gap: 8px;
-            }
-            .logo p {
-                font-size: 0.8rem;
-            }
-            .form-title {
-                font-size: 1.2rem;
-            }
-            .input-field {
-                padding: 10px 12px;
-                font-size: 0.9rem;
-            }
-            .btn-add {
-                padding: 12px;
-                font-size: 0.95rem;
-            }
-            .table-body {
-                max-height: 250px;
-            }
-            .stat-card {
-                padding: 15px;
-            }
-            .stat-value {
-                font-size: 1.8rem;
-            }
-            .connection-status {
-                font-size: 0.75rem;
-                padding: 6px 10px;
-            }
-        }
-        
-        @media (max-width: 360px) {
-            th, td {
-                padding: 10px 8px;
-                font-size: 0.85rem;
-            }
-            .grade-badge {
-                min-width: 50px;
-                font-size: 0.75rem;
-            }
-            .btn-delete {
-                padding: 5px 8px;
-                font-size: 0.75rem;
-            }
-            .input-field {
-                padding: 8px 10px;
-            }
-        }
-        
-        /* Mobile-specific touch improvements */
-        @media (hover: none) and (pointer: coarse) {
-            .btn-add, .btn-delete, .input-field {
-                min-height: 44px;
-            }
-            .input-field {
-                font-size: 16px; /* Prevents iOS zoom */
-            }
+        @media (hover:none) and (pointer:coarse){
+            .btn-add,.btn-delete,.input-field{min-height:44px}
+            .input-field{font-size:16px}
         }
     </style>
 </head>
@@ -440,12 +333,9 @@
             console.error(error);
         }
 
-        // Mobile-specific improvements
         window.addEventListener('DOMContentLoaded', function() {
-            // Prevent zoom on mobile input focus
             document.addEventListener('touchstart', function() {}, {passive: true});
             
-            // Better touch handling for mobile
             if ('ontouchstart' in window) {
                 document.querySelectorAll('.btn-add, .btn-delete, .input-field').forEach(el => {
                     el.style.minHeight = '44px';
