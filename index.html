@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .compact-app {
+            width: 100%;
+            max-width: 1100px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, #4A00E0, #8E2DE2);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-title h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .app-title p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .app-body {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+            padding: 25px;
+            max-height: 600px;
+            overflow: hidden;
+        }
+
+        .form-section {
+            border-right: 2px solid #eef2f7;
+            padding-right: 25px;
+        }
+
+        .form-title {
+            color: #2d3748;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #8E2DE2;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #4a5568;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: #f8fafc;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #8E2DE2;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(142, 45, 226, 0.1);
+        }
+
+        .btn-add {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #4A00E0, #8E2DE2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(142, 45, 226, 0.3);
+        }
+
+        .table-section {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .table-title {
+            color: #2d3748;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .table-container {
+            flex: 1;
+            overflow-y: auto;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            max-height: 450px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            background: #4A00E0;
+            color: white;
+        }
+
+        th {
+            padding: 14px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e2e8f0;
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f7fafc;
+        }
+
+        td {
+            padding: 14px 12px;
+            color: #2d3748;
+            font-size: 0.95rem;
+        }
+
+        .grade-badge {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .grade-good {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+        }
+
+        .grade-average {
+            background: linear-gradient(135deg, #ed8936, #dd6b20);
+            color: white;
+        }
+
+        .btn-delete {
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-delete:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(245, 101, 101, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a0aec0;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            opacity: 0.4;
+            margin-bottom: 15px;
+        }
+
+        .app-footer {
+            background: #f8fafc;
+            padding: 15px 25px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #718096;
+        }
+
+        .loader {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid #8E2DE2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Scrollbar styling */
+        .table-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 3px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
+        }
+    </style>
+</head>
+<body>
+    <div class="compact-app">
+        <div class="app-header">
+            <div class="app-title">
+                <h1><i class="fas fa-graduation-cap"></i> Student Manager</h1>
+                <p>Firebase Firestore Database</p>
+            </div>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="totalStudents">0</div>
+                    <div class="stat-label">Students</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="avgGrade">0%</div>
+                    <div class="stat-label">Avg Grade</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="app-body">
+            <div class="form-section">
+                <div class="form-title">
+                    <i class="fas fa-user-plus"></i>
+                    Add Student
+                </div>
+                
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="name" class="form-input" placeholder="Name">
+                </div>
+                
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="email" class="form-input" placeholder="Email">
+                </div>
+                
+                <div class="form-group">
+                    <label>Age</label>
+                    <input type="number" id="age" class="form-input" placeholder="Age" min="10" max="100">
+                </div>
+                
+                <div class="form-group">
+                    <label>Grade</label>
+                    <input type="number" id="grade" class="form-input" placeholder="Grade" min="0" max="100">
+                </div>
+                
+                <button class="btn-add" onclick="addStudent()">
+                    <i class="fas fa-plus-circle"></i>
+                    Add to Database
+                </button>
+            </div>
+
+            <div class="table-section">
+                <div class="table-header">
+                    <div class="table-title">
+                        <i class="fas fa-users"></i>
+                        Student List
+                    </div>
+                    <div id="status" class="status-badge status-loading">
+                        <i class="loader"></i> Loading...
+                    </div>
+                </div>
+                
+                <div id="tableContainer" class="table-container">
+                    <div id="emptyState" class="empty-state" style="display: block;">
+                        <div class="empty-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <h3>No Students Yet</h3>
+                        <p>Add your first student using the form</p>
+                    </div>
+                    
+                    <table id="studentsTable" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Age</th>
+                                <th>Grade</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="app-footer">
+            <div>
+                <i class="fas fa-database"></i>
+                Connected to Firebase Firestore
+            </div>
+            <div>
+                Project ID: studentmanagementapp-9902b
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCyBluIlub_Atjl96t0P3jvTYdxbvZC4hQ",
+            authDomain: "studentmanagementapp-9902b.firebaseapp.com",
+            projectId: "studentmanagementapp-9902b",
+            storageBucket: "studentmanagementapp-9902b.firebasestorage.app",
+            messagingSenderId: "209522191296",
+            appId: "1:209522191296:web:4944c12a36e6d8ded07625",
+            measurementId: "G-MX3J0Y34XL"
+        };
+
+        let students = [];
+
+        function updateStatus(text, type) {
+            const status = document.getElementById('status');
+            if (type === 'loading') {
+                status.innerHTML = `<i class="loader"></i> ${text}`;
+            } else {
+                status.innerHTML = text;
+            }
+            status.className = `status-badge status-${type}`;
+        }
+
+        function showMessage(text, type) {
+            updateStatus(text, type);
+            setTimeout(() => {
+                const count = students.length;
+                updateStatus(`${count} student${count !== 1 ? 's' : ''}`, 'success');
+            }, 2000);
+        }
+
+        try {
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+            updateStatus("Connected", "success");
+
+            function loadStudents() {
+                updateStatus("Loading...", "loading");
+                
+                db.collection("students").get()
+                    .then((snapshot) => {
+                        students = [];
+                        let totalGrade = 0;
+                        
+                        if (snapshot.empty) {
+                            document.getElementById('emptyState').style.display = 'block';
+                            document.getElementById('studentsTable').style.display = 'none';
+                            updateStatus("No students", "success");
+                        } else {
+                            document.getElementById('emptyState').style.display = 'none';
+                            document.getElementById('studentsTable').style.display = 'table';
+                            
+                            const tbody = document.querySelector('#studentsTable tbody');
+                            tbody.innerHTML = '';
+                            
+                            snapshot.forEach((doc) => {
+                                const data = doc.data();
+                                const student = {
+                                    id: doc.id,
+                                    name: data.name || '',
+                                    email: data.email || '',
+                                    age: data.age || 0,
+                                    grade: data.grade || 0
+                                };
+                                
+                                students.push(student);
+                                totalGrade += student.grade;
+                                
+                                const row = tbody.insertRow();
+                                const gradeClass = student.grade >= 75 ? 'grade-good' : 'grade-average';
+                                
+                                row.innerHTML = `
+                                    <td><strong>${student.name}</strong></td>
+                                    <td>${student.email}</td>
+                                    <td>${student.age}</td>
+                                    <td><span class="grade-badge ${gradeClass}">${student.grade}%</span></td>
+                                    <td>
+                                        <button class="btn-delete" onclick="deleteStudent('${student.id}')">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </td>
+                                `;
+                            });
+                            
+                            const total = students.length;
+                            const avgGrade = total > 0 ? Math.round(totalGrade / total) : 0;
+                            
+                            document.getElementById('totalStudents').textContent = total;
+                            document.getElementById('avgGrade').textContent = avgGrade + '%';
+                            
+                            updateStatus(`${total} student${total !== 1 ? 's' : ''}`, "success");
+                        }
+                    })
+                    .catch((error) => {
+                        updateStatus("Error loading", "success");
+                        console.error(error);
+                    });
+            }
+
+            window.addStudent = function() {
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const age = document.getElementById('age').value;
+                const grade = document.getElementById('grade').value;
+                
+                if (!name || !email || !age || !grade) {
+                    showMessage("Fill all fields", "success");
+                    return;
+                }
+                
+                if (age < 10 || age > 100) {
+                    showMessage("Invalid age", "success");
+                    return;
+                }
+                
+                if (grade < 0 || grade > 100) {
+                    showMessage("Invalid grade", "success");
+                    return;
+                }
+                
+                updateStatus("Saving...", "loading");
+                
+                db.collection("students").add({
+                    name: name,
+                    email: email,
+                    age: parseInt(age),
+                    grade: parseInt(grade),
+                    created: new Date().toISOString()
+                })
+                .then(() => {
+                    document.getElementById('name').value = '';
+                    document.getElementById('email').value = '';
+                    document.getElementById('age').value = '';
+                    document.getElementById('grade').value = '';
+                    
+                    showMessage("Student added", "success");
+                    loadStudents();
+                })
+                .catch((error) => {
+                    showMessage("Save failed", "success");
+                    console.error(error);
+                });
+            }
+
+            window.deleteStudent = function(studentId) {
+                if (!confirm("Delete this student?")) return;
+                
+                updateStatus("Deleting...", "loading");
+                
+                db.collection("students").doc(studentId).delete()
+                    .then(() => {
+                        showMessage("Deleted", "success");
+                        loadStudents();
+                    })
+                    .catch((error) => {
+                        showMessage("Delete failed", "success");
+                        console.error(error);
+                    });
+            }
+
+            loadStudents();
+            
+        } catch (error) {
+            updateStatus("Connection error", "success");
+            console.error(error);
+        }
+    </script>
+</body>
+</html>
