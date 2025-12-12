@@ -8,75 +8,73 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI','Poppins',sans-serif}
-        body{background:linear-gradient(135deg,#0f172a,#1e293b);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:0}
-        .container{width:100vw;height:100vh;background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);display:grid;grid-template-rows:auto 1fr;overflow:hidden}
-        .header{background:linear-gradient(135deg,#4f46e5,#7c3aed);padding:30px 40px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.1)}
-        .logo h1{font-size:2.8rem;font-weight:800;color:white;display:flex;align-items:center;gap:15px;letter-spacing:1px}
-        .logo p{color:rgba(255,255,255,0.8);margin-top:8px;font-size:1rem}
-        .stats{display:flex;gap:40px}
-        .stat-box{background:rgba(255,255,255,0.1);padding:20px 30px;border-radius:20px;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);min-width:180px;text-align:center;transition:all 0.3s}
-        .stat-box:hover{transform:translateY(-5px);background:rgba(255,255,255,0.15)}
-        .stat-value{font-size:3.5rem;font-weight:800;color:#fbbf24;text-shadow:0 0 20px rgba(251,191,36,0.5)}
-        .stat-label{color:rgba(255,255,255,0.9);font-size:1rem;margin-top:5px}
-        .main{display:grid;grid-template-columns:400px 1fr;gap:0;height:100%}
-        .form-section{background:rgba(255,255,255,0.03);padding:40px;border-right:1px solid rgba(255,255,255,0.1);display:flex;flex-direction:column}
-        .form-title{color:white;font-size:1.8rem;font-weight:700;margin-bottom:30px;display:flex;align-items:center;gap:15px}
-        .form-title i{color:#fbbf24}
-        .input-group{margin-bottom:25px}
-        .input-group label{display:block;color:rgba(255,255,255,0.8);font-weight:600;margin-bottom:10px;font-size:1rem}
-        .input-field{width:100%;padding:16px 20px;background:rgba(255,255,255,0.07);border:2px solid rgba(255,255,255,0.1);border-radius:12px;font-size:1.1rem;color:white;transition:all 0.3s}
-        .input-field:focus{outline:none;border-color:#fbbf24;background:rgba(255,255,255,0.1);box-shadow:0 0 0 4px rgba(251,191,36,0.2)}
-        .input-field::placeholder{color:rgba(255,255,255,0.4)}
-        .btn-add{width:100%;padding:20px;background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#1e293b;border:none;border-radius:12px;font-size:1.3rem;font-weight:800;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:15px;margin-top:20px;letter-spacing:1px}
-        .btn-add:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(251,191,36,0.4)}
-        .table-section{padding:40px;display:flex;flex-direction:column;height:100%;overflow:hidden}
-        .table-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}
-        .table-title{color:white;font-size:1.8rem;font-weight:700;display:flex;align-items:center;gap:15px}
-        .table-title i{color:#fbbf24}
-        .status{background:rgba(251,191,36,0.2);color:#fbbf24;padding:10px 20px;border-radius:25px;font-weight:700;font-size:1rem;border:1px solid rgba(251,191,36,0.3)}
-        .table-container{flex:1;background:rgba(255,255,255,0.03);border-radius:20px;border:1px solid rgba(255,255,255,0.1);overflow:hidden;display:flex;flex-direction:column}
-        table{width:100%;border-collapse:collapse;min-width:600px}
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
+        body{background:linear-gradient(135deg,#0f172a,#1e293b);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}
+        .container{width:100%;max-width:1400px;background:white;border-radius:20px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,0.3)}
+        .header{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;padding:25px 40px}
+        .header-top{display:flex;justify-content:space-between;align-items:center}
+        .logo h1{font-size:2.5rem;font-weight:800;display:flex;align-items:center;gap:15px}
+        .logo p{opacity:0.9;margin-top:5px;font-size:0.95rem}
+        .stats-container{display:flex;justify-content:space-between;margin-top:25px}
+        .stat-card{text-align:center;background:rgba(255,255,255,0.15);padding:20px 30px;border-radius:15px;min-width:200px;border:1px solid rgba(255,255,255,0.2)}
+        .stat-value{font-size:3rem;font-weight:800;color:#fbbf24}
+        .stat-label{font-size:1rem;margin-top:10px;font-weight:600}
+        .main{display:flex;min-height:600px}
+        .form-section{flex:0 0 400px;background:#f8fafc;padding:30px;border-right:2px solid #e2e8f0}
+        .form-title{color:#2d3748;font-size:1.6rem;font-weight:700;margin-bottom:25px;display:flex;align-items:center;gap:12px}
+        .form-title i{color:#4f46e5}
+        .input-group{margin-bottom:20px}
+        .input-group label{display:block;color:#4a5568;font-weight:600;margin-bottom:8px;font-size:0.95rem}
+        .input-field{width:100%;padding:14px;background:white;border:2px solid #e2e8f0;border-radius:10px;font-size:1rem;color:#2d3748;transition:all 0.3s}
+        .input-field:focus{outline:none;border-color:#4f46e5;box-shadow:0 0 0 3px rgba(79,70,229,0.1)}
+        .btn-add{width:100%;padding:16px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;border:none;border-radius:10px;font-size:1.2rem;font-weight:700;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:12px;margin-top:10px}
+        .btn-add:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(79,70,229,0.3)}
+        .table-section{flex:1;padding:30px;background:white;display:flex;flex-direction:column}
+        .table-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+        .table-title{color:#2d3748;font-size:1.6rem;font-weight:700;display:flex;align-items:center;gap:12px}
+        .table-title i{color:#4f46e5}
+        .status{background:#e2e8f0;color:#4a5568;padding:8px 16px;border-radius:20px;font-weight:600;font-size:0.9rem}
+        .table-container{flex:1;border:2px solid #e2e8f0;border-radius:10px;overflow:hidden}
+        table{width:100%;border-collapse:collapse}
         thead{background:linear-gradient(135deg,#4f46e5,#7c3aed)}
-        th{padding:22px 20px;text-align:left;color:white;font-weight:700;font-size:1.1rem}
-        tbody tr{background:rgba(255,255,255,0.02);border-bottom:1px solid rgba(255,255,255,0.05)}
-        tbody tr:hover{background:rgba(255,255,255,0.04)}
-        td{padding:22px 20px;color:white;font-size:1.1rem}
-        td strong{color:#fbbf24}
-        .grade{background:linear-gradient(135deg,#10b981,#34d399);color:white;padding:8px 16px;border-radius:10px;font-weight:800;font-size:1rem;display:inline-block;min-width:70px;text-align:center}
-        .grade.high{background:linear-gradient(135deg,#10b981,#34d399)}
-        .grade.medium{background:linear-gradient(135deg,#f59e0b,#fbbf24)}
-        .grade.low{background:linear-gradient(135deg,#ef4444,#f87171)}
-        .btn-delete{background:linear-gradient(135deg,#ef4444,#f87171);color:white;border:none;border-radius:10px;cursor:pointer;font-weight:700;padding:12px 20px;display:flex;align-items:center;gap:10px;transition:all 0.3s}
-        .btn-delete:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(239,68,68,0.3)}
-        .empty-state{text-align:center;padding:100px 20px;color:rgba(255,255,255,0.5)}
-        .empty-icon{font-size:6rem;margin-bottom:25px;color:rgba(255,255,255,0.1)}
-        .empty-state h3{color:white;font-size:2rem;margin-bottom:15px}
-        .table-body{flex:1;overflow-y:auto}
-        .table-body::-webkit-scrollbar{width:10px}
-        .table-body::-webkit-scrollbar-track{background:rgba(255,255,255,0.05)}
-        .table-body::-webkit-scrollbar-thumb{background:rgba(251,191,36,0.3);border-radius:5px}
-        .table-body::-webkit-scrollbar-thumb:hover{background:rgba(251,191,36,0.5)}
-        @media(max-width:1200px){.main{grid-template-columns:350px 1fr}.header{padding:25px 30px}.stat-box{padding:15px 25px;min-width:150px}.stat-value{font-size:2.8rem}}
-        @media(max-width:1024px){.container{height:auto;min-height:100vh}.main{grid-template-columns:1fr;grid-template-rows:auto auto;gap:0}.form-section{border-right:none;border-bottom:1px solid rgba(255,255,255,0.1)}.table-section{padding:30px}}
-        @media(max-width:768px){.header{flex-direction:column;text-align:center;gap:25px}.stats{width:100%;justify-content:space-around}.main{padding:0}.form-section,.table-section{padding:25px}.input-field{padding:14px 18px}.btn-add{padding:18px}}
-        @media(max-width:576px){.stat-box{padding:15px;min-width:120px}.stat-value{font-size:2.2rem}.input-field{padding:12px 16px}.btn-add{padding:16px;font-size:1.1rem}th,td{padding:18px 15px}.btn-delete{padding:10px 16px}}
-        @media(max-width:480px){.logo h1{font-size:2.2rem}.header{padding:20px}.form-section,.table-section{padding:20px}.table-title,.form-title{font-size:1.5rem}}
+        th{padding:18px 16px;text-align:left;color:white;font-weight:700;font-size:1rem}
+        tbody tr{border-bottom:1px solid #e2e8f0}
+        td{padding:18px 16px;color:#2d3748;font-size:1rem}
+        .grade{background:#10b981;color:white;padding:6px 14px;border-radius:8px;font-weight:700;font-size:0.95rem;display:inline-block;min-width:65px;text-align:center}
+        .grade.medium{background:#f59e0b}
+        .grade.low{background:#ef4444}
+        .btn-delete{background:#ef4444;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;padding:8px 14px;display:flex;align-items:center;gap:6px;transition:all 0.3s}
+        .btn-delete:hover{background:#dc2626}
+        .empty-state{text-align:center;padding:60px 20px;color:#a0aec0}
+        .empty-icon{font-size:4rem;margin-bottom:20px;opacity:0.2}
+        .empty-state h3{color:#4a5568;font-size:1.5rem;margin-bottom:10px}
+        .table-body{height:400px;overflow-y:auto}
+        .table-body::-webkit-scrollbar{width:6px}
+        .table-body::-webkit-scrollbar-track{background:#f1f1f1}
+        .table-body::-webkit-scrollbar-thumb{background:#cbd5e0;border-radius:3px}
+        @media(max-width:1200px){.container{max-width:95%}}
+        @media(max-width:1024px){.main{flex-direction:column}.form-section{border-right:none;border-bottom:2px solid #e2e8f0}}
+        @media(max-width:768px){.header{padding:20px}.header-top{flex-direction:column;text-align:center;gap:15px}.stats-container{flex-direction:column;gap:15px}.stat-card{min-width:auto}}
+        @media(max-width:480px){.form-section,.table-section{padding:20px}.input-field{padding:12px}.btn-add{padding:14px;font-size:1.1rem}th,td{padding:14px 12px}}
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="logo">
-                <h1><i class="fas fa-user-graduate"></i> Student Manager</h1>
-                <p>Cloud Database Management System</p>
+            <div class="header-top">
+                <div class="logo">
+                    <h1><i class="fas fa-graduation-cap"></i> Student Manager</h1>
+                    <p>Cloud Database Management System</p>
+                </div>
+                <div class="status" id="status">Connected ✓</div>
             </div>
-            <div class="stats">
-                <div class="stat-box">
+            
+            <div class="stats-container">
+                <div class="stat-card">
                     <div class="stat-value" id="totalStudents">0</div>
                     <div class="stat-label">TOTAL STUDENTS</div>
                 </div>
-                <div class="stat-box">
+                <div class="stat-card">
                     <div class="stat-value" id="avgGrade">0%</div>
                     <div class="stat-label">AVERAGE GRADE</div>
                 </div>
@@ -86,44 +84,41 @@
         <div class="main">
             <div class="form-section">
                 <div class="form-title">
-                    <i class="fas fa-plus-circle"></i>
+                    <i class="fas fa-user-plus"></i>
                     ADD NEW STUDENT
                 </div>
                 
                 <div class="input-group">
                     <label>FULL NAME</label>
-                    <input type="text" id="name" class="input-field" placeholder="Enter student full name">
+                    <input type="text" id="name" class="input-field" placeholder="">
                 </div>
                 
                 <div class="input-group">
                     <label>EMAIL ADDRESS</label>
-                    <input type="email" id="email" class="input-field" placeholder="student@institution.edu">
+                    <input type="email" id="email" class="input-field" placeholder="">
                 </div>
                 
                 <div class="input-group">
                     <label>AGE</label>
-                    <input type="number" id="age" class="input-field" placeholder="Enter any age">
+                    <input type="number" id="age" class="input-field" placeholder="">
                 </div>
                 
                 <div class="input-group">
                     <label>GRADE (%)</label>
-                    <input type="number" id="grade" class="input-field" placeholder="0-100">
+                    <input type="number" id="grade" class="input-field" placeholder="" min="0" max="100">
                 </div>
                 
                 <button class="btn-add" onclick="addStudent()">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    SAVE TO DATABASE
+                    <i class="fas fa-save"></i>
+                    SAVE STUDENT
                 </button>
             </div>
 
             <div class="table-section">
                 <div class="table-header">
                     <div class="table-title">
-                        <i class="fas fa-list-alt"></i>
+                        <i class="fas fa-users"></i>
                         STUDENT RECORDS
-                    </div>
-                    <div id="status" class="status">
-                        <i class="fas fa-spinner fa-spin"></i> LOADING...
                     </div>
                 </div>
                 
@@ -133,7 +128,7 @@
                             <div class="empty-icon">
                                 <i class="fas fa-user-graduate"></i>
                             </div>
-                            <h3>NO RECORDS FOUND</h3>
+                            <h3>NO STUDENTS FOUND</h3>
                             <p>Add your first student to begin</p>
                         </div>
                         
@@ -168,26 +163,17 @@
 
         let students = [];
 
-        function updateStatus(text, type) {
-            const status = document.getElementById('status');
-            status.innerHTML = text;
-            status.style.background = type === 'success' ? 
-                'rgba(16,185,129,0.2)' : 
-                'rgba(251,191,36,0.2)';
-            status.style.color = type === 'success' ? 
-                '#10b981' : '#fbbf24';
-            status.style.borderColor = type === 'success' ? 
-                'rgba(16,185,129,0.3)' : 
-                'rgba(251,191,36,0.3)';
+        function updateStatus(text) {
+            document.getElementById('status').textContent = text;
         }
 
         try {
             firebase.initializeApp(firebaseConfig);
             const db = firebase.firestore();
-            updateStatus("✓ CONNECTED", "success");
+            updateStatus("Connected ✓");
 
             function loadStudents() {
-                updateStatus("⌛ LOADING...", "loading");
+                updateStatus("Loading...");
                 
                 db.collection("students").orderBy("created", "desc").get()
                     .then((snapshot) => {
@@ -197,7 +183,7 @@
                         if (snapshot.empty) {
                             document.getElementById('emptyState').style.display = 'block';
                             document.getElementById('studentsTable').style.display = 'none';
-                            updateStatus("📭 NO STUDENTS", "success");
+                            updateStatus("No students");
                         } else {
                             document.getElementById('emptyState').style.display = 'none';
                             document.getElementById('studentsTable').style.display = 'table';
@@ -219,9 +205,10 @@
                                 totalGrade += student.grade;
                                 
                                 const row = tbody.insertRow();
-                                let gradeClass = 'high';
-                                if (student.grade < 75) gradeClass = 'medium';
-                                if (student.grade < 60) gradeClass = 'low';
+                                let gradeClass = '';
+                                if (student.grade >= 75) gradeClass = '';
+                                else if (student.grade >= 60) gradeClass = 'medium';
+                                else gradeClass = 'low';
                                 
                                 row.innerHTML = `
                                     <td><strong>${student.name}</strong></td>
@@ -242,11 +229,11 @@
                             document.getElementById('totalStudents').textContent = total;
                             document.getElementById('avgGrade').textContent = avgGrade + '%';
                             
-                            updateStatus(`📊 ${total} STUDENTS`, "success");
+                            updateStatus(`${total} students`);
                         }
                     })
                     .catch((error) => {
-                        updateStatus("⚠️ LOAD ERROR", "success");
+                        updateStatus("Error loading");
                         console.error(error);
                     });
             }
@@ -258,16 +245,16 @@
                 const grade = document.getElementById('grade').value;
                 
                 if (!name || !email || !age || !grade) {
-                    updateStatus("⚠️ FILL ALL FIELDS", "success");
+                    updateStatus("Fill all fields");
                     return;
                 }
                 
                 if (grade < 0 || grade > 100) {
-                    updateStatus("⚠️ GRADE: 0-100", "success");
+                    updateStatus("Grade: 0-100 only");
                     return;
                 }
                 
-                updateStatus("💾 SAVING...", "loading");
+                updateStatus("Saving...");
                 
                 db.collection("students").add({
                     name: name,
@@ -282,11 +269,11 @@
                     document.getElementById('age').value = '';
                     document.getElementById('grade').value = '';
                     
-                    updateStatus("✅ STUDENT ADDED", "success");
+                    updateStatus("Student added ✓");
                     setTimeout(() => loadStudents(), 1000);
                 })
                 .catch((error) => {
-                    updateStatus("❌ SAVE FAILED", "success");
+                    updateStatus("Save failed");
                     console.error(error);
                 });
             }
@@ -294,15 +281,15 @@
             window.deleteStudent = function(studentId) {
                 if (!confirm("Delete this student permanently?")) return;
                 
-                updateStatus("🗑️ DELETING...", "loading");
+                updateStatus("Deleting...");
                 
                 db.collection("students").doc(studentId).delete()
                     .then(() => {
-                        updateStatus("✅ DELETED", "success");
+                        updateStatus("Deleted ✓");
                         setTimeout(() => loadStudents(), 1000);
                     })
                     .catch((error) => {
-                        updateStatus("❌ DELETE FAILED", "success");
+                        updateStatus("Delete failed");
                         console.error(error);
                     });
             }
@@ -310,15 +297,9 @@
             loadStudents();
             
         } catch (error) {
-            updateStatus("🔌 CONNECTION ERROR", "success");
+            updateStatus("Connection error");
             console.error(error);
         }
-
-        window.addEventListener('load', function() {
-            const container = document.querySelector('.container');
-            container.style.width = '100vw';
-            container.style.height = '100vh';
-        });
     </script>
 </body>
 </html>
